@@ -5,4 +5,5 @@ branches:
 projects:
   libPluginLang-PMMP:
     path: ""
+    icon: "icon.png"
 ...
