@@ -1,9 +1,10 @@
---- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/Blugin/libTranslator-PMMP
-build-by-default: true
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/Blugin/libTranslator
 branches:
-- master
+  - master
 projects:
-  libTranslator:
-    path: ""
-    icon: "icon.png"
+  libtranslator:
+    model: virion
+    type: library
+    lint:
+      phpstan: false
 ...
