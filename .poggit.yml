@@ -8,6 +8,6 @@ projects:
     lint:
       phpstan: false
     libs:
-      - src: Blugin/virions/LocaleConverter
+      - src: Blugin/LocaleConverter/LocaleConverter
         version: ^1.0.1
 ...
