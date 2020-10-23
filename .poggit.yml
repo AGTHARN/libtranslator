@@ -1,4 +1,4 @@
---- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/Blugin/libTranslator
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/PresentKim/libtranslator
 branches:
   - main
 projects:
@@ -8,6 +8,6 @@ projects:
     lint:
       phpstan: false
     libs:
-      - src: Blugin/LocaleConverter/LocaleConverter
+      - src: PresentKim/locale-converter/locale-converter
         version: ^1.0.1
 ...
