@@ -7,7 +7,4 @@ projects:
     type: library
     lint:
       phpstan: false
-    libs:
-      - src: PresentKim/locale-converter/locale-converter
-        version: ^2.0.0
 ...
