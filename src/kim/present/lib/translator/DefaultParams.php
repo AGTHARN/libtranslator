@@ -31,8 +31,11 @@ namespace kim\present\lib\translator;
 
 use function strtolower;
 
-final class DefaultParams{
-    private function __construct(){ }
+final class DefaultParams
+{
+    private function __construct()
+    {
+    }
 
     /** @see https://github.com/PresentKim/libtranslator/blob/main/doc/eng/DefaultParams.md */
     private const DEFAULTS = [
@@ -138,11 +141,13 @@ final class DefaultParams{
     private static array $params = self::DEFAULTS;
 
     /** @return string[] */
-    public static function getAll() : array{
+    public static function getAll(): array
+    {
         return self::$params;
     }
 
-    public static function register(string $paramName, string $str) : void{
+    public static function register(string $paramName, string $str): void
+    {
         self::$params[strtolower($paramName)] = $str;
     }
 }

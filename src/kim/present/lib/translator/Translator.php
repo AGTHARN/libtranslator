@@ -30,49 +30,59 @@ declare(strict_types=1);
 
 namespace kim\present\lib\translator;
 
-use kim\present\converter\locale\LocaleConverter;
-use pocketmine\command\CommandSender;
-use pocketmine\Server;
-
-use function array_keys;
-use function array_merge;
+use function strlen;
 use function explode;
+use pocketmine\Server;
+use function array_keys;
+use function strtolower;
+use function array_merge;
+use function str_replace;
 use function method_exists;
 use function preg_match_all;
-use function str_replace;
-use function strlen;
-use function strtolower;
+use pocketmine\player\Player;
+use pocketmine\command\CommandSender;
+use kim\present\lib\translator\converter\locale\LocaleConverter;
 
-class Translator{
-    /** @var Language[] Language instances */
+class Translator
+{
+    /** @var Language[] $languages */
     protected array $languages = [];
 
-    /** Default language */
+    /** @var Language|null $defaultLanguage */
     public ?Language $defaultLanguage = null;
 
-    /** @param Language[] $languages */
-    public function __construct(array $languages = [], ?Language $defaultLanguage = null){
+    /**
+     * __construct
+     *
+     * @param  @param Language[] $language
+     * @param  Language|null $defaultLanguage
+     * @return void
+     */
+    public function __construct(array $languages = [], ?Language $defaultLanguage = null)
+    {
         $this->languages = $languages;
         $this->defaultLanguage = $defaultLanguage;
     }
 
     /**
-     * @param string      $str original string
-     * @param mixed[]     $params translate parameters
-     * @param string|null $locale translate language locale. if null, translate by default language
+     * translate
      *
-     * @return string the translated string
+     * @param  string $str - original string
+     * @param  mixed[] $params - translate parameters
+     * @param  string|null $locale - translate language locale. if null, translate by default language
+     * @return string
      */
-    public function translate(string $str, array $params = [], ?string $locale = null) : string{
+    public function translate(string $str, array $params = [], ?string $locale = null): string
+    {
         $params = array_merge($params, DefaultParams::getAll());
         $lang = $this->getLanguage($locale);
-        if($lang !== null){
+        if ($lang !== null) {
             $parts = explode("%", $str);
             $str = "";
             $lastTranslated = false;
-            foreach($parts as $_ => $part){
+            foreach ($parts as $_ => $part) {
                 $new = $lang->get($part) ?? $this->defaultLanguage->getNonNull($part);
-                if(strlen($str) > 0 && $part === $new && !$lastTranslated){
+                if (strlen($str) > 0 && $part === $new && !$lastTranslated) {
                     $str .= "%";
                 }
                 $lastTranslated = $part !== $new;
@@ -81,9 +91,9 @@ class Translator{
             }
         }
 
-        if(preg_match_all("/\{%([a-zA-Z0-9]+)\}/", $str, $matches, PREG_SET_ORDER) !== false){
-            foreach($matches as $match){
-                if(isset($params[$match[1]])){
+        if (preg_match_all("/\{%([a-zA-Z0-9]+)\}/", $str, $matches, PREG_SET_ORDER) !== false) {
+            foreach ($matches as $match) {
+                if (isset($params[$match[1]])) {
                     $str = str_replace($match[0], $params[$match[1]], $str);
                 }
             }
@@ -92,40 +102,72 @@ class Translator{
     }
 
     /**
-     * @param string             $str original string
-     * @param mixed[]            $params translate parameters
-     * @param CommandSender|null $sender translate target sender. if null, translate by default language
-     *
+     * translateTo
+     * 
+     * @param string $str - original string
+     * @param mixed[] $params - translate parameters
+     * @param CommandSender|null $sender - translate target sender. if null, translate by default language
      * @return string
      */
-    public function translateTo(string $str, array $params, ?CommandSender $sender = null) : string{
+    public function translateTo(string $str, array $params, ?CommandSender $sender = null): string
+    {
         $locale = null;
-        if($sender !== null && method_exists($sender, 'getLocale') && !Server::getInstance()->isLanguageForced()){
+        if ($sender !== null && method_exists($sender, 'getLocale') && !Server::getInstance()->isLanguageForced()) {
+            /** @var Player $sender */
             $locale = LocaleConverter::convertIEFT($sender->getLocale());
         }
         return $this->translate($str, $params, $locale);
     }
 
-    /** @return Language[] */
-    public function getLanguages() : array{
+    /**
+     * getLanguages
+     *
+     * @return Language[]
+     */
+    public function getLanguages(): array
+    {
         return $this->languages;
     }
-
-    /** @return string[] */
-    public function getLocaleList() : array{
+    
+    /**
+     * getLocaleList
+     *
+     * @return string[]
+     */
+    public function getLocaleList(): array
+    {
         return array_keys($this->getLanguages());
     }
-
-    /** @return Language|null if $locale is null, return default language */
-    public function getLanguage(?string $locale = null) : ?Language{
+    
+    /**
+     * getLanguage
+     *
+     * @param  string|null $locale
+     * @return Language|null - if $locale is null, return default language
+     */
+    public function getLanguage(?string $locale = null): ?Language
+    {
         return $this->languages[strtolower($locale ?? Server::getInstance()->getLanguage()->getLang())] ?? $this->defaultLanguage;
     }
-
-    public function getDefaultLanguage() : ?Language{
+    
+    /**
+     * getDefaultLanguage
+     *
+     * @return Language|null
+     */
+    public function getDefaultLanguage(): ?Language
+    {
         return $this->defaultLanguage;
     }
-
-    public function setDefaultLanguage(?Language $defaultLanguage) : void{
+    
+    /**
+     * setDefaultLanguage
+     *
+     * @param  Language|null $defaultLanguage
+     * @return void
+     */
+    public function setDefaultLanguage(?Language $defaultLanguage): void
+    {
         $this->defaultLanguage = $defaultLanguage;
     }
 }

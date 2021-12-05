@@ -30,13 +30,20 @@ declare(strict_types=1);
 namespace kim\present\lib\translator\traits;
 
 use kim\present\lib\translator\Translator;
-use kim\present\lib\translator\TranslatorHolder;
 
 /** This trait override most methods in the {@link TranslatorHolder} interface. */
-trait TranslatorHolderTrait{
+trait TranslatorHolderTrait
+{
+    /** @var Translator $translator */
     private Translator $translator;
-
-    public function getTranslator() : Translator{
+    
+    /**
+     * getTranslator
+     *
+     * @return Translator
+     */
+    public function getTranslator(): Translator
+    {
         return $this->translator;
     }
 }

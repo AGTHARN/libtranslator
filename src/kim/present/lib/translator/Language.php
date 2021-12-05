@@ -30,47 +30,95 @@ declare(strict_types=1);
 namespace kim\present\lib\translator;
 
 use function array_map;
-use function file_exists;
-use function file_get_contents;
-use function parse_ini_string;
 use function strtolower;
+use function file_exists;
+use function parse_ini_string;
+use function file_get_contents;
 
-class Language{
-    /** Locale name (ISO_639-3 code) */
-    protected string $locale;
-
-    /** @var string[] id => text */
+class Language
+{
+    /** @var string[] $map - id => text */
     protected array $map = [];
-
-    public function __construct(array $map, string $locale){
-        $this->locale = $locale;
+    /** @var string $locale - Locale name (ISO_639-3 code) */
+    protected string $locale;
+    
+    /**
+     * __construct
+     *
+     * @param  string[] $map
+     * @param  string $locale
+     * @return void
+     */
+    public function __construct(array $map, string $locale)
+    {
         $this->map = $map;
+        $this->locale = $locale;
     }
-
-    public function getLocale() : string{
+    
+    /**
+     * getLocale
+     *
+     * @return string
+     */
+    public function getLocale(): string
+    {
         return $this->locale;
     }
-
-    public function get(string $id) : ?string{
+    
+    /**
+     * get
+     *
+     * @param  string $id
+     * @return string|null
+     */
+    public function get(string $id): ?string
+    {
         return $this->map[$id] ?? null;
     }
-
-    public function getNonNull(string $id) : string{
+    
+    /**
+     * getNonNull
+     *
+     * @param  string $id
+     * @return string
+     */
+    public function getNonNull(string $id): string
+    {
         return $this->map[$id] ?? $id;
     }
-
-    public function getName() : string{
+    
+    /**
+     * getName
+     *
+     * @return string
+     */
+    public function getName(): string
+    {
         return $this->getNonNull("language.name");
     }
-
-    /** @return Language the loaded language from contents */
-    public static function fromContents(string $contents, string $locale) : Language{
+ 
+    /**
+     * fromContents
+     *
+     * @param  string $contents
+     * @param  string $locale
+     * @return Language - the loaded language from contents
+     */
+    public static function fromContents(string $contents, string $locale): Language
+    {
         return new Language(array_map("stripcslashes", parse_ini_string($contents, false, INI_SCANNER_RAW)), strtolower($locale));
     }
-
-    /** @return Language|null the loaded language from file */
-    public static function fromFile(string $path, string $locale) : ?Language{
-        if(!file_exists($path))
+    
+    /**
+     * fromFile
+     *
+     * @param  string $path
+     * @param  string $locale
+     * @return Language|null the loaded language from file
+     */
+    public static function fromFile(string $path, string $locale): ?Language
+    {
+        if (!file_exists($path))
             return null;
 
         return self::fromContents(file_get_contents($path), $locale);

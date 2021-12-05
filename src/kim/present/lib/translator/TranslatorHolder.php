@@ -28,6 +28,12 @@ declare(strict_types=1);
 
 namespace kim\present\lib\translator;
 
-interface TranslatorHolder{
-    public function getTranslator() : Translator;
+interface TranslatorHolder
+{    
+    /**
+     * getTranslator
+     *
+     * @return Translator
+     */
+    public function getTranslator(): Translator;
 }
